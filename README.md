@@ -10,7 +10,7 @@ The following dependencies are documented in the `Dockerfile`:
 
 - `Unity`: Unity editor to be used in batch mode, to run the tests for the project, and producing a NUnit test report
 - `xsltproc`: default XSLT processor available on Linux and MacOS
-- `nunit3-junit.xml`: XSL transform definition from the [NUnit Transforms](https://github.com/nunit/nunit-transforms.git) project to generate the JUnit test report
+- `nunit3-junit.xslt`: XSL transform definition from the [NUnit Transforms](https://github.com/nunit/nunit-transforms.git) project to generate the JUnit test report
 - `xunit-viewer`: [NodeJS program](https://github.com/lukejpreston/xunit-viewer) to generate the visual HTML test report from the JUnit test report
 - `git`
 - `curl`
@@ -19,10 +19,11 @@ The following dependencies are documented in the `Dockerfile`:
 
 ```zsh
 > cd <project-folder>
-> git pull origin main
-> .../Unity/Hub/Editor/2020.3.25f1/Unity.app/Contents/MacOS/Unity -runTests -batchmode -projectPath . -testPlatform EditMode -testResults /tmp/nunit-test-results.xml
+> git pull --rebase tradelite develop
+> /Applications/Unity/Hub/Editor/2021.3.9f1/Unity.app/Contents/MacOS/Unity -batchMode -projectPath . -testPlatform EditMode -nographics -quit
+> /Applications/Unity/Hub/Editor/2021.3.9f1/Unity.app/Contents/MacOS/Unity -runTests -batchMode -projectPath . -testPlatform EditMode -testResults /tmp/nunit-results.xml
 > curl https://raw.githubusercontent.com/nunit/nunit-transforms/master/nunit3-junit/nunit3-junit.xslt > /tmp/nunit3-junit.xslt
-> xsltproc /tmp/nunit3-junit.xslt /tmp/nunit-test-results.xml > /tmp/junit-results.xml
-> npx xunit-viewer --results=/tmp/junit-results.xml --title "Tradelite Unity SDK" --save=/tmp/report.html
+> xsltproc /tmp/nunit3-junit.xslt /tmp/nunit-results.xml > /tmp/junit-results.xml
+> npx xunit-viewer --results=/tmp/junit-results.xml --title "Tradelite Unity SDK" --output=/tmp/report.html --console
 
 The sequence above does not handle the test run errors, does not define any notification mechanism. Check the Dockerfile for more details.
